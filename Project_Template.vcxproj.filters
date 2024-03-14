@@ -48,7 +48,7 @@
     <ClCompile Include="helper\trianglemesh.cpp">
       <Filter>helper</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Public\OpenGL\src\glad.c">
+    <ClCompile Include="..\..\GLApplications\Project1\Project1\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

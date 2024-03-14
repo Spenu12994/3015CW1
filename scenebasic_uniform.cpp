@@ -17,13 +17,17 @@ using std::endl;
 using glm::vec3;
 using glm::mat4;
 
+float turnAxis = -300.0f;
+
 SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30) {}
 
 void SceneBasic_Uniform::initScene()
 {
     compile();
+    glEnable(GL_DEPTH_TEST);
     model = mat4(1.0f);
-    view = glm::lookAt(vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(vec3(0.5f, 0.75f, 0.75f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-35.0f), vec3(1.0f, 0.0f, 0.0f));
     projection = mat4(1.0f);
     prog.setUniform("LightPosition", view * glm::vec4(5.0f, 5.0f, 2.0f, 1.0f));
     prog.setUniform("Ld", vec3(1.0f,1.0f,1.0f));
@@ -47,16 +51,25 @@ void SceneBasic_Uniform::compile()
 void SceneBasic_Uniform::update( float t )
 {
 	//update your angle here
+    if (m_animate) {
+        turnAxis += 1.0f;
+    }
+    std::cout << turnAxis;
+
 }
 
 void SceneBasic_Uniform::render()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(0.0f, -5.0f, -5.0f));
+    model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
    
 
     setMatrices();
     torus.render();//double check this
-
+    
 
 }
 
@@ -73,5 +86,5 @@ void SceneBasic_Uniform::setMatrices() {
     mat4 mv = view*model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix", glm::mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2])));
-    prog.setUniform("MVP", projection * mv);
+    prog.setUniform("MVP", projection*mv);
 }
