@@ -119,9 +119,28 @@ private:
     }
 
     void mainLoop(GLFWwindow * window, Scene & scene) {
+
+        int currDir = 0;
+
         while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
-			
+
+            //player controls/////////////////////////////////////////////////////////////////////
+            currDir = 0;
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+                currDir = 1;
+            }
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+                currDir = 2;
+            }
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+                currDir = 3;
+            }
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+                currDir = 4;
+            }
+
+            scene.playerInput(float(glfwGetTime()), currDir);
             scene.update(float(glfwGetTime()));
             scene.render();
             glfwSwapBuffers(window);
@@ -130,6 +149,10 @@ private:
 			int state = glfwGetKey(window, GLFW_KEY_SPACE);
 			if (state == GLFW_PRESS)
 				scene.animate(!scene.animating());
+
+
         }
     }
+
+
 };
