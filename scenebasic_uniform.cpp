@@ -30,7 +30,17 @@ vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
 //Up position within world space
 vec3 cameraUp = vec3(0.0f, 1.0f, 0.0f);
 
-SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30),skyBox(100.0f), plane(50.0f,50.0f,1,1), tPrev(0.0f) {
+//Camera sidways rotation
+float cameraYaw = -90.0f;
+//Camera vertical rotation
+float cameraPitch = 0.0f;
+//Determines if first entry of mouse into window
+bool mouseFirstEntry = true;
+//Positions of camera from given last frame
+float cameraLastXPos = 800.0f / 2.0f;
+float cameraLastYPos = 600.0f / 2.0f;
+
+SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30), skyBox(100.0f), plane(50.0f,50.0f,1,1), tPrev(0.0f) {
 }
 
 void SceneBasic_Uniform::initScene()
@@ -155,10 +165,10 @@ void SceneBasic_Uniform::setMatrices(GLSLProgram& prog) {
 }
 
 
-void SceneBasic_Uniform::playerInput(float deltaTime, int dirT)
+void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
 {
     dir = dirT;
-    float movementSpeed = 0.3f * deltaTime;
+    float movementSpeed = 0.002f * deltaTime;
     if (dir == 1) {//forwards
         cameraPosition += movementSpeed * cameraFront;
     }
@@ -172,4 +182,46 @@ void SceneBasic_Uniform::playerInput(float deltaTime, int dirT)
         cameraPosition += normalize(cross(cameraFront, cameraUp)) * movementSpeed;
     }
     dir = 0;
+
+
+    float lookOffset = 0.4f;
+
+    switch (angT) {
+        case 1: {
+            cameraPitch += lookOffset;
+            break;
+        }
+        case 2: {
+            cameraPitch -= lookOffset;
+            break;
+        }
+        case 3: {
+            cameraYaw -= lookOffset;
+            break;
+        }
+        case 4: {
+            cameraYaw += lookOffset;
+            break;
+        }
+    }
+    
+
+    //Prevents turning up & down beyond 90 degrees to look backwards
+    if (cameraPitch > 89.0f)
+    {
+        cameraPitch = 89.0f;
+    }
+    else if (cameraPitch < -89.0f)
+    {
+        cameraPitch = -89.0f;
+    }
+
+    //Modification of direction vector based on mouse turning
+    vec3 direction;
+    direction.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    direction.y = sin(glm::radians(cameraPitch));
+    direction.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    cameraFront = normalize(direction);
+
+
 }

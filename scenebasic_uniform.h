@@ -41,7 +41,7 @@ public:
     void update(float t);
     void render();
     void resize(int, int);
-    void playerInput(float, int);
+    void playerInput(float, int, int);
 };
 
 #endif // SCENEBASIC_UNIFORM_H
