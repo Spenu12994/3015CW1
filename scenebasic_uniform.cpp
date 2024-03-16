@@ -91,6 +91,12 @@ void SceneBasic_Uniform::compile()
         skyBoxProg.link();
         skyBoxProg.use();
 
+
+        toonProg.compileShader("shader/projTexture.vert");
+        toonProg.compileShader("shader/projTexture.frag");
+        toonProg.link();
+        toonProg.use();
+
 		prog.compileShader("shader/basic_uniform.vert");
 		prog.compileShader("shader/basic_uniform.frag");
 		prog.link();
@@ -153,10 +159,26 @@ void SceneBasic_Uniform::render()
 
     setMatrices(prog);
     plane.render();
-    prog.use();
+    toonProg.use();
+    
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f, -5.0f, -5.0f));
+    model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
+
+    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
+    prog.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(prog);
+    torus.render();
+
+    //toon torus
+    prog.use();
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(0.0f, -5.0f, -10.0f));
     model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
 
     prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));

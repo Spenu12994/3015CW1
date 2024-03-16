@@ -1,13 +1,14 @@
 #version 460
 
-in vec4 pos;
-in vec3 norm;
-in vec2 textureCoordinates;
-in vec3 vertexPositionFrag;
-in vec4 projectedTextureCoordinates;
-
-
+in vec3 vertexPositionPass;
+in vec3 vertexNormalPass;
 layout (location = 0) out vec4 FragColor;
+
+
+uniform mat4 ModelViewMatrix;
+uniform mat3 NormalMatrix;
+uniform mat4 ProjectionMatrix;
+uniform mat4 MVP;
 
 
 uniform struct LightInfo{
@@ -23,29 +24,35 @@ uniform struct MaterialInfo{
     float Shininess;//spec shininiess factor
 }Material;
 
+const int levels = 3;
+const float scaleFactor = 1.0/levels;
 
-vec3 phongModel(int light, vec3 cameraNorm, vec4 position){ //phong lighting
+vec3 phongModel(int light, vec3 position, vec3 n){ //phong lighting
     vec3 ambient=lights[light].La*Material.Ka;
-    vec3 s = normalize(vec3(lights[light].Position - (position * lights[light].Position)));
-    float sDotN=max(dot(s,cameraNorm), 0.0);
-    vec3 diffuse=Material.Kd*sDotN;
+    vec3 s=normalize(vec3(lights[light].Position.xyz-position));
+
+    float sDotN=max(dot(s,n), 0.0);
+
+    vec3 diffuse = Material.Kd*floor(sDotN*levels)*scaleFactor;
+    
     vec3 spec=vec3(0.0);
     if (sDotN>0.0){
         vec3 v=normalize(-position.xyz);
-        vec3 r=reflect(-s,cameraNorm);
+        vec3 r=reflect(-s,n);
         spec=Material.Ks*pow(max(dot(r,v),0.0),Material.Shininess);
     }
     return ambient+(diffuse+spec)*lights[light].L;
 }
 
 void main() {
+    vec3 n = normalize(NormalMatrix*vertexNormalPass);
+    vec3 camCoords=(ModelViewMatrix*vec4(vertexPositionPass,1.0)).xyz;
 
-    vec3 colour = vec3(0.0);
-    vec3 normalised = normalize(norm);
-    
+    vec3 colour;
+
+    colour = vec3(0.0);
     for(int i=0; i<3;i++){
-        colour += phongModel(i, norm, pos);
+        colour += phongModel(i,camCoords,n);
     }
-
-    FragColor = vec4(colour,1);
+    FragColor = vec4(colour, 1.0);
 }

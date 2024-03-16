@@ -22,6 +22,7 @@ private:
     //GLuint vaoHandle; removed as it is handled by triangle mesh class (check lab 2)
     Torus torus;
     GLSLProgram prog;
+    GLSLProgram toonProg;
     
     //float angle; becomes redundant (lab 2)
 
