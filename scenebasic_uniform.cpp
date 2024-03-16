@@ -40,7 +40,8 @@ bool mouseFirstEntry = true;
 float cameraLastXPos = 800.0f / 2.0f;
 float cameraLastYPos = 600.0f / 2.0f;
 
-SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30), skyBox(100.0f), plane(50.0f,50.0f,1,1), tPrev(0.0f) {
+SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30), skyBox(100.0f), plane(25.0f,25.0f,1,1), tPrev(0.0f) {
+    rollerCoaster = ObjMesh::load("media/rollercoaster/rollercoaster.obj", true, false);
 }
 
 void SceneBasic_Uniform::initScene()
@@ -119,8 +120,39 @@ void SceneBasic_Uniform::update(float t)
 void SceneBasic_Uniform::render()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+    //set camera
     view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+
+    prog.use();
+
+    model = mat4(1.0f);
+    model = glm::translate(model, cameraPosition);
+
+    model = glm::rotate(model, glm::radians((-1*cameraYaw)-180), vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians((-1 * cameraPitch)), vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, vec3(-1.5f, -2.0f, 0.0f));
+
+    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
+    prog.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(prog);
+    rollerCoaster->render();
+
+
+    //render models
+    prog.use();
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(0.0f, -6.0f, -5.0f));
+
+    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
+    prog.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(prog);
+    plane.render();
     prog.use();
 
     model = mat4(1.0f);
@@ -133,7 +165,7 @@ void SceneBasic_Uniform::render()
     prog.setUniform("Material.Shininess", 100.0f);
 
     setMatrices(prog);
-    torus.render();//double check this
+    torus.render();
     
     model = mat4(1.0f);
     skyBoxProg.use();
@@ -164,6 +196,50 @@ void SceneBasic_Uniform::setMatrices(GLSLProgram& prog) {
     //prog.setUniform("Fog.Color", vec3(0.5f, 0.5f, 0.5f));
 }
 
+void SceneBasic_Uniform::mouseInput(float deltaTime, double xpos, double ypos)
+{
+    //Initially no last positions, so sets last positions to current positions
+    if (mouseFirstEntry)
+    {
+        cameraLastXPos = (float)xpos;
+        cameraLastYPos = (float)ypos;
+        mouseFirstEntry = false;
+    }
+
+    //Sets values for change in position since last frame to current frame
+    float xOffset = (float)xpos - cameraLastXPos;
+    float yOffset = cameraLastYPos - (float)ypos;
+
+    //Sets last positions to current positions for next frame
+    cameraLastXPos = (float)xpos;
+    cameraLastYPos = (float)ypos;
+
+    //Moderates the change in position based on sensitivity value
+    const float sensitivity = 0.025f;
+    xOffset *= sensitivity;
+    yOffset *= sensitivity;
+
+    //Adjusts yaw & pitch values against changes in positions
+    cameraYaw += xOffset;
+    cameraPitch += yOffset;
+
+    //Prevents turning up & down beyond 90 degrees to look backwards
+    if (cameraPitch > 89.0f)
+    {
+        cameraPitch = 89.0f;
+    }
+    else if (cameraPitch < -89.0f)
+    {
+        cameraPitch = -89.0f;
+    }
+
+    //Modification of direction vector based on mouse turning
+    vec3 direction;
+    direction.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    direction.y = sin(glm::radians(cameraPitch));
+    direction.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    cameraFront = normalize(direction);
+}
 
 void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
 {

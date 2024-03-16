@@ -5,10 +5,13 @@
 
 #include <glad/glad.h>
 #include "helper/glslprogram.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include "helper/torus.h"
 #include "glm/glm.hpp"
+#include "helper/objmesh.h"
 
 #include "plane.h"
 #include "skybox.h"
@@ -27,6 +30,7 @@ private:
     Plane plane;
 
     GLSLProgram skyBoxProg;
+    std::unique_ptr<ObjMesh> rollerCoaster;
     
 
     float tPrev;
@@ -42,6 +46,7 @@ public:
     void render();
     void resize(int, int);
     void playerInput(float, int, int);
+    void mouseInput(float, double, double);
 };
 
 #endif // SCENEBASIC_UNIFORM_H

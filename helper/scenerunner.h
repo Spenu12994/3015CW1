@@ -13,6 +13,17 @@
 #include <fstream>
 #include <iostream>
 
+
+double xPos, yPos;
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    xPos = xpos;
+    yPos = ypos;
+}
+
+
+
 class SceneRunner {
 private:
     GLFWwindow * window;
@@ -122,6 +133,12 @@ private:
 
         int currDir = 0;
         int currAng = 0;
+        //Sets cursor to automatically bind to window & hides cursor pointer
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //Binds OpenGL to window
+        glfwMakeContextCurrent(window);
+        //Sets the mouse_callback() function as the callback for the mouse movement event
+        glfwSetCursorPosCallback(window, mouse_callback);
 
         while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
@@ -155,11 +172,15 @@ private:
                 currAng = 4;
             }
 
+            scene.mouseInput(float(glfwGetTime()), xPos, yPos);
+
             scene.playerInput(float(glfwGetTime()), currDir, currAng);
             scene.update(float(glfwGetTime()));
             scene.render();
             glfwSwapBuffers(window);
 
+
+            
             glfwPollEvents();
 			int state = glfwGetKey(window, GLFW_KEY_SPACE);
 			if (state == GLFW_PRESS)
@@ -168,6 +189,8 @@ private:
 
         }
     }
+
+    
 
 
 };
