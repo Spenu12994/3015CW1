@@ -1,7 +1,7 @@
 # 3015CW1
 <h1>Comp 3015 course work 1 github page</h1>
 <h2></h2>
-youtube video: <br>
+youtube video: https://youtu.be/FUgGZeGzIzo<br>
 Github: (https://github.com/Spenu12994/3015CW1/)<br>
 
 <h2>What I started with</h2><br>
