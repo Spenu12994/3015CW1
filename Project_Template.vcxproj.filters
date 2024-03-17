@@ -80,10 +80,22 @@
     <None Include="shader\skybox_vert.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\projTexture.frag">
+    <None Include="shader\toonShader.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader\projTexture.vert">
+    <None Include="shader\toonShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\basic_uniformspotlight.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\basic_uniformspotlight.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\basic_uniformfog.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\basic_uniformfog.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

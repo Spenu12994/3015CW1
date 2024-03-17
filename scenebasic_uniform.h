@@ -23,6 +23,7 @@ private:
     Torus torus;
     GLSLProgram prog;
     GLSLProgram toonProg;
+    GLSLProgram spotlightProg;
     
     //float angle; becomes redundant (lab 2)
 
@@ -33,6 +34,8 @@ private:
     GLSLProgram skyBoxProg;
     std::unique_ptr<ObjMesh> rollerCoaster;
     
+    //spotlight
+    float angle;
 
     float tPrev;
 

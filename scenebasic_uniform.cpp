@@ -55,6 +55,10 @@ void SceneBasic_Uniform::initScene()
 
     prog.use();
 
+    GLuint texID = Texture::loadTexture("media/texture/brick1.jpg");
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texID);
+
     float x, z;
     for (int i = 0; i < 3; i++) {
         std::stringstream name;
@@ -71,6 +75,30 @@ void SceneBasic_Uniform::initScene()
     prog.setUniform("lights[0].La", vec3(0.0f, 0.0f, 0.2f));
     prog.setUniform("lights[1].La", vec3(0.0f, 0.2f, 0.0f));
     prog.setUniform("lights[2].La", vec3(0.2f, 0.0f, 0.0f));
+
+    toonProg.use();
+
+    for (int i = 0; i < 3; i++) {
+        std::stringstream name;
+        name << "lights[" << i << "].Position";
+        x = 2.0f * cosf((glm::two_pi<float>() / 3) * i);
+        z = 2.0f * sinf((glm::two_pi<float>() / 3) * i);
+        toonProg.setUniform(name.str().c_str(), view * glm::vec4(x, 1.2f, z + 1.0f, 1.0f));
+    }
+    toonProg.setUniform("lights[0].L", vec3(0.0f, 0.0f, 0.8f));
+    toonProg.setUniform("lights[1].L", vec3(0.0f, 0.8f, 0.0f));
+    toonProg.setUniform("lights[2].L", vec3(0.8f, 0.0f, 0.0f));
+
+
+    toonProg.setUniform("lights[0].La", vec3(0.0f, 0.0f, 0.2f));
+    toonProg.setUniform("lights[1].La", vec3(0.0f, 0.2f, 0.0f));
+    toonProg.setUniform("lights[2].La", vec3(0.2f, 0.0f, 0.0f));
+
+    spotlightProg.use();
+    spotlightProg.setUniform("Spot.L", vec3(0.9f));
+    spotlightProg.setUniform("Spot.La", vec3(0.5f));
+    spotlightProg.setUniform("Spot.Exponent", 150.0f);
+    spotlightProg.setUniform("Spot.Radius", glm::radians(15.0f));
 
 
     //skybox
@@ -92,10 +120,15 @@ void SceneBasic_Uniform::compile()
         skyBoxProg.use();
 
 
-        toonProg.compileShader("shader/projTexture.vert");
-        toonProg.compileShader("shader/projTexture.frag");
+        toonProg.compileShader("shader/toonShader.vert");
+        toonProg.compileShader("shader/toonShader.frag");
         toonProg.link();
         toonProg.use();
+
+        spotlightProg.compileShader("shader/basic_uniformspotlight.vert");
+        spotlightProg.compileShader("shader/basic_uniformspotlight.frag");
+        spotlightProg.link();
+        spotlightProg.use();
 
 		prog.compileShader("shader/basic_uniform.vert");
 		prog.compileShader("shader/basic_uniform.frag");
@@ -125,8 +158,17 @@ void SceneBasic_Uniform::update(float t)
 
 void SceneBasic_Uniform::render()
 {
+    prog.use();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
     //set camera
+
+    
+
+    //render models
+
+    //rollercoastd
+
     view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 
     prog.use();
@@ -147,10 +189,12 @@ void SceneBasic_Uniform::render()
     rollerCoaster->render();
 
 
-    //render models
+
+
+    //regular plane
     prog.use();
     model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, -6.0f, -5.0f));
+    model = glm::translate(model, vec3(0.0f, -1.0f, 0.0f));
 
     prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
     prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
@@ -159,36 +203,62 @@ void SceneBasic_Uniform::render()
 
     setMatrices(prog);
     plane.render();
+
+    //regular torus
+    prog.use();
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(0.0f, 0.0f, -2.0f));
+    model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
+
+    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
+    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
+    prog.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(prog);
+    torus.render();
+
+    //toon shaded
     toonProg.use();
     
 
     model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, -5.0f, -5.0f));
+    model = glm::translate(model, vec3(-2.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
 
-    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
-    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
-    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
-    prog.setUniform("Material.Shininess", 100.0f);
+    toonProg.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    toonProg.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
+    toonProg.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
+    toonProg.setUniform("Material.Shininess", 100.0f);
 
-    setMatrices(prog);
+    setMatrices(toonProg);
     torus.render();
 
-    //toon torus
-    prog.use();
+
+    //spotlight torus
+    spotlightProg.use();
+
+    glm::vec4 lightPos = glm::vec4(0.0f, 10.0f, 0.0f, 1.0f);
+    spotlightProg.setUniform("Spot.Position", (view * lightPos));
+    glm::mat3 normalMatrix = glm::mat3(glm::vec3(view[0]), glm::vec3(view[1]), glm::vec3(view[2]));
+    spotlightProg.setUniform("Spot.Direction", normalMatrix * glm::vec3(-lightPos));
 
     model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, -5.0f, -10.0f));
+    model = glm::translate(model, vec3(0.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
 
-    prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
-    prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
-    prog.setUniform("Material.Ks", vec3(0.8f, 0.8f, 0.8f));
-    prog.setUniform("Material.Shininess", 100.0f);
-
-    setMatrices(prog);
-    torus.render();
+    spotlightProg.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    spotlightProg.setUniform("Material.Ks", vec3(0.95f, 0.95f, 0.95f));
+    spotlightProg.setUniform("Material.Ka", vec3(0.2f*0.3f,0.55f*0.3f,0.9f*0.3f));
     
+    spotlightProg.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(spotlightProg);
+    torus.render();
+
+
+    //skybox
     model = mat4(1.0f);
     skyBoxProg.use();
     setMatrices(skyBoxProg);
@@ -205,8 +275,8 @@ void SceneBasic_Uniform::resize(int w, int h)
 }
 
 void SceneBasic_Uniform::setMatrices(GLSLProgram& prog) {
-    //Setting of matrices & related fog information
-    glm::mat4 mv = view * model;
+    //set matrices
+    glm::mat4 mv = view * model;//model view
 
     prog.setUniform("modelViewMatrix", mv);
     prog.setUniform("NormalMatrix", glm::mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2])));
@@ -214,8 +284,6 @@ void SceneBasic_Uniform::setMatrices(GLSLProgram& prog) {
     prog.setUniform("projection", projection);
     prog.setUniform("ModelMatrix", model);
 
-    //prog.setUniform("Fog.MinDistance", 1.f);
-    //prog.setUniform("Fog.Color", vec3(0.5f, 0.5f, 0.5f));
 }
 
 void SceneBasic_Uniform::mouseInput(float deltaTime, double xpos, double ypos)
