@@ -5,7 +5,8 @@ in vec3 vertexNormalPass;
 in vec2 TexCoord;
 
 layout (location = 0) out vec4 FragColor;
-layout(binding=0) uniform sampler2D Tex1;
+layout (binding=0) uniform sampler2D brickTex;
+layout (binding = 1) uniform sampler2D mossTex;
 
 uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
@@ -29,19 +30,23 @@ uniform struct MaterialInfo{
 
 
 vec3 phongModel(int light, vec3 position, vec3 n){ //phong lighting
-    vec3 texColor=texture(Tex1,TexCoord).rgb;
-    vec3 ambient=lights[light].La*texColor;
+
+    vec4 brickTexColour=texture(brickTex,TexCoord);
+    vec4 mossTexColour=texture(mossTex,TexCoord);
+    vec3 texColour=mix(brickTexColour.rgb,mossTexColour.rgb,mossTexColour.a);//because moss is a png we add the alpha
+
+    vec3 ambient=lights[light].La*texColour;
     
     vec3 s=normalize(vec3(lights[light].Position.xyz-position));
     float sDotN=max(dot(s,n), 0.0);
-    vec3 diffuse=texColor*sDotN;
+    vec3 diffuse=texColour*sDotN;
     vec3 spec=vec3(0.0);
     if (sDotN>0.0){
         vec3 v=normalize(-position.xyz);
         vec3 r=reflect(-s,n);
         spec=Material.Ks*pow(max(dot(r,v),0.0),Material.Shininess);
     }
-    return ambient+(diffuse+spec)*lights[light].L*texColor;
+    return ambient+(diffuse+spec)*lights[light].L*texColour;
 }
 
 

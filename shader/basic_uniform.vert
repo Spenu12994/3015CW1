@@ -14,6 +14,6 @@ void main()
 {
     vertexNormalPass = VertexNormal;
     vertexPositionPass = VertexPosition;
-    vec2 TexCoord = VertexTexCoord;
+    TexCoord = VertexTexCoord;
     gl_Position = MVP*vec4(VertexPosition,1.0);
 }

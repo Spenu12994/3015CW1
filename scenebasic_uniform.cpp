@@ -55,9 +55,19 @@ void SceneBasic_Uniform::initScene()
 
     prog.use();
 
-    GLuint texID = Texture::loadTexture("media/texture/brick1.jpg");
+
+    //load textures
+    GLuint cubeTex = Texture::loadHdrCubeMap("media/texture/cube/pisa-hdr/pisa");
+
+    
+    GLuint cement = Texture::loadTexture("media/texture/cement.jpg");
+    GLuint moss = Texture::loadTexture("media/texture/moss.png");
+
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texID);
+    glBindTexture(GL_TEXTURE_2D, cement);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, moss);
 
     float x, z;
     for (int i = 0; i < 3; i++) {
@@ -100,12 +110,12 @@ void SceneBasic_Uniform::initScene()
     spotlightProg.setUniform("Spot.Exponent", 150.0f);
     spotlightProg.setUniform("Spot.Radius", glm::radians(15.0f));
 
-
     //skybox
     skyBoxProg.use();
-    GLuint cubeTex = Texture::loadHdrCubeMap("media/texture/cube/pisa-hdr/pisa");
-    glActiveTexture(GL_TEXTURE0);
+    
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTex);
+  
 
     
     
