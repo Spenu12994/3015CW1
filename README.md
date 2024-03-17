@@ -1,6 +1,9 @@
 # 3015CW1
 <h1>Comp 3015 course work 1 github page</h1>
 <h2></h2>
+videos and screenshots are running on windows 11,
+developed in visual studio 2022
+
 youtube video: https://youtu.be/FUgGZeGzIzo<br>
 Github: (https://github.com/Spenu12994/3015CW1/)<br>
 
@@ -48,12 +51,15 @@ playerInput() is called from scenerunner and handles our player input, using del
 basic_uniform frag and vert handle normal phong shading using textures and 3 lights of varying colours, the vert passes through our normal, position, and texture coordinates for our fragment shader. the fragmentshader normalizes our normal against our normal matrix, gets the coordinates of our camera/view by multiplaying our model view matrix against the position. 
 
 wiht this information, we call our phong model 3 times, once for each light we have in the scene. here we combine our textures, and calculate our ambient, diffuse, and specular colours from our material details, finally multiplying them against our light colour and texture colour to recieve the final calculation, which is added to a running vec3 colour variable and then sent out through out FragColour variable
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/fe22a2c5-b607-4a59-9f37-a2d3567522cb)
 
 <h4>Basic_UniformSpotlight</h4>
 this file is extremely similar to Basic_Uniform, with the main difference being our replacement of the lights structure with a spot light structure, which holds its radius and brightness and colour. in this fragment shader, we only need to run out phong model once, and here we run our normal colour calculations (without textures) while also making sure that the light is within our spotlight area of effect, finally multiplying the end result against our spotlight colour to give our stagelit render.
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/344142f2-6b80-4ecb-ace7-49a031110846)
 
 <h4>toonShader</h4>
 this shader handles the stylized toony torus that can be seen. this is done by keeping almost all the same code from basic_uniform, however locking our colours at various intensities. by using our diffuse (line 36), we round our diffuse colours/dot product against a preset number of levels, making the lighting snap to colours rather than be one smooth gradient.
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/c5611140-07c5-4712-aaea-3ea073ebcf77)
 
 <h4>Basic_UniformFog</h4>
 this file is the start of a fog shader, however was never fully implemented, and as such is not ever accessed within our program. this is kept here with the future hope of implementing fog.
@@ -61,6 +67,7 @@ this file is the start of a fog shader, however was never fully implemented, and
 
 <h4>skybox</h4>
 this file is unique from the rest, using much less code. in our skybox shader vert, we simply pass forward our position and vertex position for the frag, however this position.xyz could be calculated in the fragment shader instead. in our fragment shader we simply get our skybox texture, calculate the position and colour, then pass it through FragColor to render our skybox.
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/449cbf5f-a1c9-4dcf-8559-7083a7a68c7a)
 
 
 
