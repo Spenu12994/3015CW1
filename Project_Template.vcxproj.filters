@@ -98,6 +98,27 @@
     <None Include="shader\basic_uniformfog.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shader\2PassRendering.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\2PassRendering.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\blurShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\blurShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\finalBlendShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\finalBlendShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\light_box.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper\scene.h">

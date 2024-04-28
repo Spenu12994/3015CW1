@@ -148,14 +148,32 @@ private:
             if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
                 currDir = 1;
             }
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
                 currDir = 2;
             }
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
                 currDir = 3;
             }
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
                 currDir = 4;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+                currDir = 5;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+                currDir = 6;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+                currDir = 7;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+                currDir = 8;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+                currDir = 9;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+                currDir = 10;
             }
 
             currAng = 0;

@@ -24,7 +24,14 @@ private:
     GLSLProgram prog;
     GLSLProgram toonProg;
     GLSLProgram spotlightProg;
-    
+    GLSLProgram edgeProg;
+    GLSLProgram blurProg;
+    GLSLProgram finalBlendProg;
+
+    GLSLProgram lightBox;//code sampled from https://learnopengl.com/Advanced-Lighting/Bloom for testing purposes (bloom + hdr)
+
+    GLuint fsQuad, fboHandle, renderTex;
+    GLuint cement, moss;
     //float angle; becomes redundant (lab 2)
 
     //skybox variables
@@ -41,12 +48,15 @@ private:
 
     void setMatrices(GLSLProgram& prog);
     void compile();
+    void pass1();
+    void pass2();
+    void setupFBO();
 
 public:
     SceneBasic_Uniform();
-
     void initScene();
     void update(float t);
+
     void render();
     void resize(int, int);
     void playerInput(float, int, int);

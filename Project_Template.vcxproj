@@ -160,12 +160,19 @@
     <ClCompile Include="skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\2PassRendering.frag" />
+    <None Include="shader\2PassRendering.vert" />
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\basic_uniformfog.frag" />
     <None Include="shader\basic_uniformfog.vert" />
     <None Include="shader\basic_uniformspotlight.frag" />
     <None Include="shader\basic_uniformspotlight.vert" />
+    <None Include="shader\blurShader.frag" />
+    <None Include="shader\blurShader.vert" />
+    <None Include="shader\finalBlendShader.frag" />
+    <None Include="shader\finalBlendShader.vert" />
+    <None Include="shader\light_box.frag" />
     <None Include="shader\skybox_frag.frag" />
     <None Include="shader\skybox_vert.vert" />
     <None Include="shader\toonShader.frag" />
