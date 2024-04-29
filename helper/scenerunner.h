@@ -169,11 +169,17 @@ private:
             else if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
                 currDir = 8;
             }
-            else if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
                 currDir = 9;
             }
-            else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
                 currDir = 10;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+                currDir = 11;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+                currDir = 12;
             }
 
             currAng = 0;

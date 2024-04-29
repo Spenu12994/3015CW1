@@ -44,6 +44,11 @@ GLuint cement;
 GLuint moss;
 GLuint screenSpace;
 
+struct LightInfo {
+    glm::vec4 Position;
+    vec3 La;
+    vec3 L;
+}lights[4];//multi light
 
 SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30), skyBox(100.0f), plane(25.0f,25.0f,1,1), tPrev(0.0f) {
     rollerCoaster = ObjMesh::load("media/rollercoaster/rollercoaster.obj", true, false);
@@ -80,6 +85,8 @@ void SceneBasic_Uniform::initScene()
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, moss);
 
+    
+
     float x, z;
     for (int i = 0; i < 3; i++) {
         std::stringstream name;
@@ -87,6 +94,7 @@ void SceneBasic_Uniform::initScene()
         x = 2.0f * cosf((glm::two_pi<float>() / 3) * i);
         z = 2.0f * sinf((glm::two_pi<float>() / 3) * i);
         prog.setUniform(name.str().c_str(), view * glm::vec4(x, 1.2f, z + 1.0f, 1.0f));
+        lights[i].Position = view * glm::vec4(x, 1.2f, z + 1.0f, 1.0f);
     }
 
     std::stringstream name;
@@ -99,12 +107,18 @@ void SceneBasic_Uniform::initScene()
 
 
     prog.setUniform("lights[0].L", vec3(0.0f, 0.0f, 0.8f));
-    prog.setUniform("lights[1].L", vec3(0.0f, 0.8f, 0.0f));
+    lights[0].L = vec3(0.0f, 0.0f, 0.8f);
+    prog.setUniform("lights[1].L", vec3(0.0f,0.8f, 0.0f));
+    lights[1].L = vec3(0.0f, 0.8f, 0.0f);
     prog.setUniform("lights[2].L", vec3(0.8f, 0.0f, 0.0f));
+    lights[2].L = vec3(0.8f, 0.0f, 0.0f);
 
-    prog.setUniform("lights[0].La", vec3(0.0f, 0.0f, 0.2f));
-    prog.setUniform("lights[1].La", vec3(0.0f, 0.2f, 0.0f));
-    prog.setUniform("lights[2].La", vec3(0.2f, 0.0f, 0.0f));
+    prog.setUniform("lights[0].La", vec3(0.0f, 0.0f, 2.2f));
+    prog.setUniform("lights[1].La", vec3(0.0f, 2.2f, 0.0f));
+    prog.setUniform("lights[2].La", vec3(2.2f, 0.0f, 0.0f));
+    lights[0].La = vec3(0.0f, 0.0f, 0.2f);
+    lights[1].La = vec3(0.0f, 0.2f, 0.0f);
+    lights[2].La = vec3(0.2f, 0.0f, 0.0f);
 
     toonProg.use();
 
@@ -205,6 +219,7 @@ unsigned int colorBuffers[2];
 float exposure = 1.0f;
 bool bloom = true;
 bool hdr = true;
+unsigned int amount = 10;
 
 void SceneBasic_Uniform::setupFBO() {
 
@@ -317,36 +332,43 @@ void SceneBasic_Uniform::compile()
         edgeProg.compileShader("shader/2PassRendering.vert");
         edgeProg.compileShader("shader/2PassRendering.frag");
         edgeProg.link();
+        edgeProg.use();
 
         skyBoxProg.compileShader("shader/skybox_frag.frag");
         skyBoxProg.compileShader("shader/skybox_vert.vert");
         skyBoxProg.link();
-
+        skyBoxProg.use();
 
         toonProg.compileShader("shader/toonShader.vert");
         toonProg.compileShader("shader/toonShader.frag");
         toonProg.link();
+        toonProg.use();
 
         spotlightProg.compileShader("shader/basic_uniformspotlight.vert");
         spotlightProg.compileShader("shader/basic_uniformspotlight.frag");
         spotlightProg.link();
+        spotlightProg.use();
 
 		prog.compileShader("shader/basic_uniform.vert");
 		prog.compileShader("shader/basic_uniform.frag");
 		prog.link();
+        prog.use();
 
         //https://learnopengl.com/Advanced-Lighting/Bloom
         blurProg.compileShader("shader/blurShader.vert");
         blurProg.compileShader("shader/blurShader.frag");
         blurProg.link();
+        blurProg.use();
 
         finalBlendProg.compileShader("shader/finalBlendShader.vert");
         finalBlendProg.compileShader("shader/finalBlendShader.frag");
         finalBlendProg.link();
+        finalBlendProg.use();
 
         lightBox.compileShader("shader/basic_uniform.vert");
         lightBox.compileShader("shader/light_box.frag");
         lightBox.link();
+        lightBox.use();
 
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
@@ -453,7 +475,6 @@ void SceneBasic_Uniform::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     prog.use();
-    
 
     //set camera
 
@@ -504,8 +525,7 @@ void SceneBasic_Uniform::render()
 
     //regular torus
     model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, 0.0f, -2.0f));
-    model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, vec3(0.0f, 0.0f, 0.0f));
 
     prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
     prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
@@ -541,7 +561,7 @@ void SceneBasic_Uniform::render()
     spotlightProg.setUniform("Spot.Direction", normalMatrix * glm::vec3(-lightPos));
 
     model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f, 0.0f, 0.0f));
+    model = glm::translate(model, vec3(0.0f, 0.0f, -2.0f));
     model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
 
     spotlightProg.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
@@ -576,6 +596,20 @@ void SceneBasic_Uniform::render()
     lightBox.setUniform("lightColor", vec3(5.0f, 5.0f, 5.0f));
     torus.render();
 
+    /*
+    //visualise lights
+    for (int i = 0; i < 3; i++) {
+        model = glm::mat4(1.0f);
+        vec3 v3 = vec3(lights[i].Position.x, lights[i].Position.y, lights[i].Position.z);
+        model = glm::translate(model, v3);
+        model = glm::scale(model, vec3(1.2f));
+
+        
+        lightBox.setUniform("lightColor",lights[i].La);
+        setMatrices(lightBox);
+        torus.render();
+    }
+    */
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -583,8 +617,9 @@ void SceneBasic_Uniform::render()
     // 2. blur bright fragments with two-pass Gaussian Blur 
 // --------------------------------------------------
     bool horizontal = true, first_iteration = true;
-    unsigned int amount = 10;
+    
     blurProg.use();
+
     for (unsigned int i = 0; i < amount; i++)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
@@ -606,7 +641,9 @@ void SceneBasic_Uniform::render()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
     finalBlendProg.setUniform("bloom", bloom);
+    finalBlendProg.setUniform("hdr", hdr);
     finalBlendProg.setUniform("exposure", exposure);
+    setMatrices(finalBlendProg);
     renderQuad();
 
     
@@ -700,10 +737,10 @@ void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
         cameraPosition += normalize(cross(cameraFront, cameraUp)) * movementSpeed;
     }
     if (dir == 5) {
-        exposure += 0.01f;
+        hdr = true;
     }
     if (dir == 6) {
-        exposure -= 0.01f;
+        hdr = false;
     }
     if (dir == 7) {
         bloom = true;
@@ -712,10 +749,16 @@ void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
         bloom = false;
     }
     if (dir == 9) {
-        bloom += 0.1f;
+        exposure += 0.01f;
     }
     if (dir == 10) {
-        bloom -= 0.1f;
+        exposure -= 0.01f;
+    }
+    if (dir == 11) {
+        
+    }
+    if (dir == 12) {
+        //reserved
     }
 
     dir = 0;

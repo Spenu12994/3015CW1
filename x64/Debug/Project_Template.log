@@ -1,20 +1,2 @@
-﻿  glad.c
-  glslprogram.cpp
-  glutils.cpp
-  objmesh.cpp
-F:\Comp300\3015CW1\helper\objmesh.cpp(188,41): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
-F:\Comp300\3015CW1\helper\objmesh.cpp(194,48): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
-F:\Comp300\3015CW1\helper\objmesh.cpp(198,43): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
-  stb_image.cpp
-  teapot.cpp
-  texture.cpp
-  torus.cpp
-  trianglemesh.cpp
-  main.cpp
-  plane.cpp
-  scenebasic_uniform.cpp
-F:\Comp300\3015CW1\scenebasic_uniform.cpp(715,9): warning C4804: '+=': unsafe use of type 'bool' in operation
-F:\Comp300\3015CW1\scenebasic_uniform.cpp(718,9): warning C4804: '-=': unsafe use of type 'bool' in operation
-  skybox.cpp
-  Generating Code...
+﻿  scenebasic_uniform.cpp
   Project_Template.vcxproj -> F:\Comp300\3015CW1\x64\Debug\Project_Template.exe
