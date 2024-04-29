@@ -92,12 +92,15 @@ Additional:<br>
 
 
 <h1>Keyboard Controls</h1>
-F (5): HDR On
-G: HDR Off
--
-H: Bloom On
-J: Bloom Off
--
-C: Exposure Up
-V: Exposure Down
+F (5): HDR On<br>
+G: HDR Off<br>
+-<br>
+H: Bloom On<br>
+J: Bloom Off<br>
+-<br>
+C: Exposure Up<br>
+V: Exposure Down<br>
+-<br>
+B: Amount of Blur Passes Up<br>
+N: Amount of Blur Passes Down<br>
 
