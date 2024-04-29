@@ -109,6 +109,6 @@ J: Bloom Off<br>
 C: Exposure Up<br>
 V: Exposure Down<br>
 -<br>
-B: Amount of Blur Passes Up<br>
-N: Amount of Blur Passes Down<br>
+B: 
+N: 
 
