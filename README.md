@@ -85,8 +85,16 @@ High Blur:<br>
 Low Blur:<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/57dd8c6c-1e5f-4ade-b819-ff7349ed617f)<br>
 
+Using a small change of code, we can extract our blur alone and see what it looks like:<br>
+
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/a227a761-3951-42bf-9ac7-940c6473dfdd)<br>
+
+
+
+
 Additional:<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/4894a4ad-90fd-4b92-bf1a-cec5c5620d93)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/a411263d-6e06-4ba4-b6a6-c8e6ed49c946)<br>
 
 
 
