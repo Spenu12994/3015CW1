@@ -1,4 +1,4 @@
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/8b265ab1-a706-4e5c-8ab8-bd24c9586f8b)# 3015CW1
+# 3015CW1
 
 <h1>Image Processing Techniques</h1>
 
@@ -11,6 +11,7 @@ render quad:<br>
 setting our frame buffer objects:<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/da890269-ff90-4d38-9bdc-494cbb159aa9)<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/eb9373c5-54cc-4d95-8724-d88b4575ecbc)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/8b265ab1-a706-4e5c-8ab8-bd24c9586f8b)<br>
 
 Bind our frame buffer before rendering:<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/e0ee1cf0-889b-44be-a4f6-87a773ea66ae)<br>
