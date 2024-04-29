@@ -27,31 +27,31 @@ set our texture:<br>
 HDR allows us to render our lighting values past the max cap (1.0) and them tone them back down to bypass the lighting limits imposed by framebuffer caps on lighting.
 we can use a floating point framebuffer (GL_RGBA16F), to bypass this limit.
 
-now that our framebuffer can be specified as a floating point buffer, we can capture our scene data with 32 bits of color, allowing much brighter lights.
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/bb69771e-9d33-4bfa-b8bd-f4741020e62a)
+now that our framebuffer can be specified as a floating point buffer, we can capture our scene data with 32 bits of color, allowing much brighter lights.<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/bb69771e-9d33-4bfa-b8bd-f4741020e62a)<br>
 
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/67049b6e-e159-45d9-a9eb-248e16d4a36a)
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/67049b6e-e159-45d9-a9eb-248e16d4a36a)<br>
 
-In our fragment shader, we can now render our scene with our new hdr values:
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/435554bd-a4f9-425e-8c92-8933884fd1e2)
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/768c1104-13c0-4d07-8cad-94dc60739eca)
+In our fragment shader, we can now render our scene with our new hdr values:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/435554bd-a4f9-425e-8c92-8933884fd1e2)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/768c1104-13c0-4d07-8cad-94dc60739eca)<br>
 
-vertex shader:
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/d090d2be-b081-466d-a30c-16a8abcb4d8a)
+vertex shader:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/d090d2be-b081-466d-a30c-16a8abcb4d8a)<br>
 
-Final result:
+Final result:<br>
 
-Off:
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/0a173de7-5aa3-4dbb-b0fc-b7730e7d3e33)
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/ecc009cd-43fd-486e-bb5c-08fd985891f0)
+Off:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/0a173de7-5aa3-4dbb-b0fc-b7730e7d3e33)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/ecc009cd-43fd-486e-bb5c-08fd985891f0)<br>
 
-On:
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/ff242b68-f1f8-403c-862e-d3ec677bbb9e)
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/35761fcc-f0ab-45cd-a6d1-dc3d0413f4e0)
+On:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/ff242b68-f1f8-403c-862e-d3ec677bbb9e)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/35761fcc-f0ab-45cd-a6d1-dc3d0413f4e0)<br>
 
-The richness of the colours are much clearer when HDR is on than off.
+The richness of the colours are much clearer when HDR is on than off.<br>
 
-![image](https://github.com/Spenu12994/3015CW1/assets/91668500/9b8f5cd4-26ae-473e-af31-a068a298a0b5)
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/9b8f5cd4-26ae-473e-af31-a068a298a0b5)<br>
 
 
 <h2>Bloom</h2>
