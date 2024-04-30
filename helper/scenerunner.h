@@ -200,10 +200,10 @@ private:
             else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
                 currDir = 12;
             }
-            else if (glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
                 currDir = 13;
             }
-            else if (glfwGetKey(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
                 currDir = 14;
             }
 

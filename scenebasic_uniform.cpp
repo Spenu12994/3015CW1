@@ -42,6 +42,7 @@ float cameraLastXPos = 800.0f / 2.0f;
 float cameraLastYPos = 600.0f / 2.0f;
 
 bool torchOn = true;
+bool disint = true;
 
 GLuint cement;
 GLuint moss;
@@ -112,6 +113,7 @@ void SceneBasic_Uniform::initScene()
     prog.setUniform("lights[2].L", vec3(0.8f, 0.8f, 0.0f));
     prog.setUniform("lights[2].La", vec3(2.0f, 0.0f, 0.0f));
 
+    prog.setUniform("disint", true);
 
     prog.setUniform("lights[0].L", vec3(0.0f, 0.0f, 0.8f));
     lights[0].L = vec3(0.0f, 0.0f, 0.8f);
@@ -504,6 +506,9 @@ void SceneBasic_Uniform::render()
 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, moss);
+
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, noiseTex);
     
 
     view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
@@ -515,6 +520,8 @@ void SceneBasic_Uniform::render()
     model = glm::rotate(model, glm::radians((-1*cameraYaw)-180), vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians((-1 * cameraPitch)), vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, vec3(-1.5f, -2.0f, 0.0f));
+
+    prog.setUniform("disint", disint);
 
     prog.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
     prog.setUniform("Material.Ka", vec3(0.2f, 0.55f, 0.9f));
@@ -813,10 +820,10 @@ void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT, int cl
         noise = false;
         break;
     case 13:
-
+        disint = true;
         break;
     case 14:
-
+        disint = false;
         break;
     default:
 

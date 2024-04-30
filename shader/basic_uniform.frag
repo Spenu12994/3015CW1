@@ -7,14 +7,16 @@ in vec2 TexCoord;
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
-layout (binding=1) uniform sampler2D cementTex;
+layout (binding = 1) uniform sampler2D cementTex;
 layout (binding = 2) uniform sampler2D mossTex;
+layout (binding = 3) uniform sampler2D noiseTex;
 
 uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 MVP;
 
+uniform bool disint;
 
 
 uniform struct LightInfo{
@@ -32,6 +34,7 @@ uniform struct MaterialInfo{
 
 
 vec3 phongModel(int light, vec3 position, vec3 n){ //phong lighting
+
 
     vec4 cementTexColour=texture(cementTex,TexCoord);
     vec4 mossTexColour=texture(mossTex,TexCoord);
@@ -60,7 +63,15 @@ void main() {
 
     vec3 colour;
 
+    float noiseLow = 0.4f;
+    float noiseHigh = 0.6f;
+    
+    vec4 noise = texture(noiseTex, TexCoord);
+
     colour = vec3(0.0);
+
+
+    
     for(int i=0; i<4;i++){
         colour += phongModel(i,camCoords,n);
     }
@@ -71,6 +82,26 @@ void main() {
         BrightColor = vec4(colour, 1.0);
     else
         BrightColor = vec4(0.0,0.0,0.0,1.0);
+
+    
+    if(noise.a < noiseLow){
+    if(disint){
+        discard;
+    }
+    else{
+        colour = vec3(0.5,0.4,1.0);
+    }
+    }
+
+    if(noise.a > noiseHigh){
+    if(disint){
+        discard;
+
+        }
+    else{
+        colour = vec3(0.5,0.4,1.0);
+    }
+    }
 
     FragColor = vec4(colour, 1.0);
 }
