@@ -39,7 +39,7 @@ private:
     Plane plane;
 
     GLSLProgram skyBoxProg;
-    std::unique_ptr<ObjMesh> rollerCoaster;
+    std::unique_ptr<ObjMesh> rollerCoaster, tunnel;
     
     //spotlight
     float angle;
@@ -59,7 +59,7 @@ public:
 
     void render();
     void resize(int, int);
-    void playerInput(float, int, int);
+    void playerInput(float, int, int, int);
     void mouseInput(float, double, double);
 };
 

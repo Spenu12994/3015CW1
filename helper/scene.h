@@ -40,7 +40,7 @@ public:
       */
     virtual void resize(int, int) = 0;
 
-    virtual void playerInput(float, int, int) = 0;
+    virtual void playerInput(float, int, int, int) = 0;
     virtual void mouseInput(float, double, double) = 0;
     
     void animate( bool value ) { m_animate = value; }

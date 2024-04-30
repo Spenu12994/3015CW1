@@ -15,6 +15,7 @@
 
 
 double xPos, yPos;
+int keyPress;//0=none,1=left,2=right
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -22,6 +23,20 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     yPos = ypos;
 }
 
+void mouse(GLFWwindow* window, int button, int action, int mods) {
+
+    switch (button) {
+    case GLFW_MOUSE_BUTTON_LEFT:
+        keyPress = 1;
+        break;
+    case GLFW_MOUSE_BUTTON_RIGHT:
+        keyPress = 2;
+        break;
+    default:
+        keyPress = 0;
+        break;
+    };
+}
 
 
 class SceneRunner {
@@ -129,6 +144,8 @@ private:
         }
     }
 
+
+
     void mainLoop(GLFWwindow * window, Scene & scene) {
 
         int currDir = 0;
@@ -139,6 +156,8 @@ private:
         glfwMakeContextCurrent(window);
         //Sets the mouse_callback() function as the callback for the mouse movement event
         glfwSetCursorPosCallback(window, mouse_callback);
+        glfwSetMouseButtonCallback(window, mouse);
+
 
         while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
             GLUtils::checkForOpenGLError(__FILE__,__LINE__);
@@ -181,6 +200,12 @@ private:
             else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
                 currDir = 12;
             }
+            else if (glfwGetKey(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                currDir = 13;
+            }
+            else if (glfwGetKey(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+                currDir = 14;
+            }
 
             currAng = 0;
             if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
@@ -198,7 +223,7 @@ private:
 
             scene.mouseInput(float(glfwGetTime()), xPos, yPos);
 
-            scene.playerInput(float(glfwGetTime()), currDir, currAng);
+            scene.playerInput(float(glfwGetTime()), currDir, currAng, keyPress);
             scene.update(float(glfwGetTime()));
             scene.render();
             glfwSwapBuffers(window);

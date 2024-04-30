@@ -16,6 +16,7 @@ using std::endl;
 #include "helper/glutils.h"
 
 #include "helper/texture.h"
+#include "helper/noisetex.h"
 
 using glm::vec3;
 using glm::mat4;
@@ -40,9 +41,15 @@ bool mouseFirstEntry = true;
 float cameraLastXPos = 800.0f / 2.0f;
 float cameraLastYPos = 600.0f / 2.0f;
 
+bool torchOn = true;
+
 GLuint cement;
 GLuint moss;
 GLuint screenSpace;
+
+
+GLuint noiseTex;
+
 
 struct LightInfo {
     glm::vec4 Position;
@@ -51,7 +58,7 @@ struct LightInfo {
 }lights[4];//multi light
 
 SceneBasic_Uniform::SceneBasic_Uniform() : torus(0.7f, 0.3f, 30, 30), skyBox(100.0f), plane(25.0f,25.0f,1,1), tPrev(0.0f) {
-    rollerCoaster = ObjMesh::load("media/rollercoaster/rollercoaster.obj", true, false);
+    rollerCoaster = ObjMesh::load("media/rollercoaster/rollercoaster.obj", true, false), tunnel = ObjMesh::load("media/tunnel/untitled.obj", true, false);
 }
 
 void SceneBasic_Uniform::initScene()
@@ -188,10 +195,12 @@ void SceneBasic_Uniform::initScene()
 
 
     spotlightProg.use();
-    spotlightProg.setUniform("Spot.L", vec3(0.9f));
+
+    spotlightProg.setUniform("torchOn", torchOn);
+    spotlightProg.setUniform("Spot.L", vec3(100.0f));
     spotlightProg.setUniform("Spot.La", vec3(0.5f));
     spotlightProg.setUniform("Spot.Exponent", 150.0f);
-    spotlightProg.setUniform("Spot.Radius", glm::radians(15.0f));
+    spotlightProg.setUniform("Spot.Radius", glm::radians(20.0f));
 
     //skybox
     skyBoxProg.use();
@@ -199,12 +208,17 @@ void SceneBasic_Uniform::initScene()
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTex);
 
+    noiseTex = NoiseTex::generate2DTex(10.0f,0.5f,width/10,height/10);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE, noiseTex);
+
+
     blurProg.use();
     blurProg.setUniform("image", 0);
     finalBlendProg.use();
     finalBlendProg.setUniform("scene", 0);
     finalBlendProg.setUniform("bloomBlur", 1);
-
+    finalBlendProg.setUniform("noiseTexture", 2);
     
 }
 
@@ -216,9 +230,10 @@ unsigned int pingpongFBO[2];
 unsigned int pingpongBuffer[2];
 unsigned int colorBuffers[2];
 
-float exposure = 1.0f;
+float exposure = 0.20f;
 bool bloom = true;
 bool hdr = true;
+bool noise = true;
 unsigned int amount = 10;
 
 void SceneBasic_Uniform::setupFBO() {
@@ -555,24 +570,52 @@ void SceneBasic_Uniform::render()
     //spotlight torus
     spotlightProg.use();
 
-    glm::vec4 lightPos = glm::vec4(0.0f, 10.0f, 0.0f, 1.0f);
-    spotlightProg.setUniform("Spot.Position", (view * lightPos));
-    glm::mat3 normalMatrix = glm::mat3(glm::vec3(view[0]), glm::vec3(view[1]), glm::vec3(view[2]));
-    spotlightProg.setUniform("Spot.Direction", normalMatrix * glm::vec3(-lightPos));
+
+
+    /*
+    model = glm::rotate(model, glm::radians((-1 * cameraYaw) - 180), vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians((-1 * cameraPitch)), vec3(0.0f, 0.0f, 1.0f));
+    */
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f, 0.0f, -2.0f));
     model = glm::rotate(model, glm::radians(turnAxis), vec3(1.0f, 0.0f, 0.0f));
 
+    spotlightProg.setUniform("torchOn", torchOn);
+
     spotlightProg.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
     spotlightProg.setUniform("Material.Ks", vec3(0.95f, 0.95f, 0.95f));
     spotlightProg.setUniform("Material.Ka", vec3(0.2f*0.3f,0.55f*0.3f,0.9f*0.3f));
+
+    spotlightProg.setUniform("Spot.Position", cameraPosition);
+    glm::mat3 normalMatrix = glm::mat3(glm::vec3(view[0]), glm::vec3(view[1]), glm::vec3(view[2]));
+    spotlightProg.setUniform("Spot.Direction", cameraFront);
+
     
     spotlightProg.setUniform("Material.Shininess", 100.0f);
 
     setMatrices(spotlightProg);
     torus.render();
 
+    //spotlight tunnel
+    spotlightProg.use();
+
+    
+    spotlightProg.setUniform("Spot.Position", cameraPosition);
+    normalMatrix = glm::mat3(glm::vec3(view[0]), glm::vec3(view[1]), glm::vec3(view[2]));
+    spotlightProg.setUniform("Spot.Direction", cameraFront);
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(-5.0f, 0.0f, -2.0f));
+
+    spotlightProg.setUniform("Material.Kd", vec3(0.2f, 0.55f, 0.9f));
+    spotlightProg.setUniform("Material.Ks", vec3(0.95f, 0.95f, 0.95f));
+    spotlightProg.setUniform("Material.Ka", vec3(0.2f * 0.3f, 0.55f * 0.3f, 0.9f * 0.3f));
+
+    spotlightProg.setUniform("Material.Shininess", 100.0f);
+
+    setMatrices(spotlightProg);
+    tunnel->render();
   
 
 
@@ -640,8 +683,12 @@ void SceneBasic_Uniform::render()
     glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, noiseTex);
+
     finalBlendProg.setUniform("bloom", bloom);
     finalBlendProg.setUniform("hdr", hdr);
+    finalBlendProg.setUniform("noiseBool", noise);
     finalBlendProg.setUniform("exposure", exposure);
     setMatrices(finalBlendProg);
     renderQuad();
@@ -720,10 +767,62 @@ void SceneBasic_Uniform::mouseInput(float deltaTime, double xpos, double ypos)
     cameraFront = normalize(direction);
 }
 
-void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
+void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT, int clickPress)
 {
     dir = dirT;
     float movementSpeed = 0.002f * deltaTime;
+
+    switch (dir) {
+    case 1:
+        cameraPosition += movementSpeed * cameraFront;
+        break;
+    case 2:
+        cameraPosition -= movementSpeed * cameraFront;
+        break;
+    case 3:
+        cameraPosition -= normalize(cross(cameraFront, cameraUp)) * movementSpeed;
+        break;
+    case 4:
+        cameraPosition += normalize(cross(cameraFront, cameraUp)) * movementSpeed;
+        break;
+    case 5:
+        hdr = true;
+        break;
+    case 6:
+        hdr = false;
+        break;
+    case 7:
+        bloom = true;
+        break;
+    case 8:
+        bloom = false;
+        break;
+    case 9:
+            if (exposure < 100)
+                exposure += 0.01f;
+
+        break;
+    case 10:
+        if (exposure > 0)
+            exposure -= 0.01f;
+        break;
+    case 11:
+        noise = true;
+        break;
+    case 12:
+        noise = false;
+        break;
+    case 13:
+
+        break;
+    case 14:
+
+        break;
+    default:
+
+        break;
+    }
+    /*
     if (dir == 1) {//forwards
         cameraPosition += movementSpeed * cameraFront;
     }
@@ -749,20 +848,41 @@ void SceneBasic_Uniform::playerInput(float deltaTime, int dirT, int angT)
         bloom = false;
     }
     if (dir == 9) {
+        if(exposure < 100)
         exposure += 0.01f;
     }
     if (dir == 10) {
+        if (exposure > 0)
         exposure -= 0.01f;
     }
     if (dir == 11) {
-        
+        noise = true;
     }
     if (dir == 12) {
         //reserved
+        noise = false;
     }
+    if (dir == 13) {
+        //reserved
+    }
+    if (dir == 14) {
+        
+    }
+    */
 
     dir = 0;
 
+    switch (clickPress) {
+    case 1:
+        torchOn = true;
+        break;
+    case 2:
+        torchOn = false;
+        break;
+    default:
+        
+        break;
+    }
 
     float lookOffset = 0.4f;
 

@@ -9,6 +9,7 @@ uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 MVP;
+uniform bool torchOn;
 
 uniform struct SpotLightInfo{
     vec3 Position;
@@ -27,6 +28,12 @@ uniform struct MaterialInfo{
 }Material;
 
 vec3 phongSpotModel(vec3 position, vec3 n){ //phong lighting
+    vec3 lightness;
+    if(torchOn)
+        lightness = Spot.L;
+    else
+        lightness = vec3(0.0f);
+
     vec3 diffuse=vec3(0), spec=vec3(0);
     vec3 ambient=Spot.La*Material.Ka;
 
@@ -47,9 +54,15 @@ vec3 phongSpotModel(vec3 position, vec3 n){ //phong lighting
             spec=Material.Ks*pow(max(dot(h,n),0.0),Material.Shininess);
         }
     }
-    
 
-    return ambient+spotScale*(diffuse+spec)*Spot.L;
+    // attenuation
+    float distance    = length(Spot.Position - vertexPositionPass);
+    float attenuation = 1.0 / (1.0f + 0.0009f * distance + 0.00032f * (distance * distance));    
+
+    diffuse *= attenuation;
+    spec *= attenuation;
+
+    return ambient+spotScale*(diffuse+spec)*lightness;
 }
 
 void main() {

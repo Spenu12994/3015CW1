@@ -9,11 +9,13 @@ out vec3 vertexPositionPass;
 out vec2 TexCoord;
 
 uniform mat4 MVP;
+uniform mat4 ModelMatrix;
+
 
 void main()
 {
-    vertexNormalPass = VertexNormal;
-    vertexPositionPass = VertexPosition;
+    vertexNormalPass = mat3(transpose(inverse(ModelMatrix))) * VertexNormal;
+    vertexPositionPass = vec3(ModelMatrix * vec4(VertexPosition, 1.0));
     TexCoord = VertexTexCoord;
     gl_Position = MVP*vec4(VertexPosition,1.0);
 }

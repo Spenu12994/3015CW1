@@ -148,6 +148,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="helper\glslprogram.cpp" />
     <ClCompile Include="helper\glutils.cpp" />
+    <ClCompile Include="helper\noisetex.cpp" />
     <ClCompile Include="helper\objmesh.cpp" />
     <ClCompile Include="helper\stb_image.cpp" />
     <ClCompile Include="helper\teapot.cpp" />
@@ -172,6 +173,8 @@
     <None Include="shader\blurShader.vert" />
     <None Include="shader\finalBlendShader.frag" />
     <None Include="shader\finalBlendShader.vert" />
+    <None Include="shader\flashlightShader.frag" />
+    <None Include="shader\flashlightShader.vert" />
     <None Include="shader\light_box.frag" />
     <None Include="shader\skybox_frag.frag" />
     <None Include="shader\skybox_vert.vert" />
@@ -183,6 +186,7 @@
     <ClInclude Include="helper\drawable.h" />
     <ClInclude Include="helper\glslprogram.h" />
     <ClInclude Include="helper\glutils.h" />
+    <ClInclude Include="helper\noisetex.h" />
     <ClInclude Include="helper\objmesh.h" />
     <ClInclude Include="helper\scene.h" />
     <ClInclude Include="helper\scenerunner.h" />

@@ -1,6 +1,7 @@
 F:\Comp300\3015CW1\glad.c;F:\Comp300\3015CW1\x64\Debug\glad.obj
 F:\Comp300\3015CW1\helper\glslprogram.cpp;F:\Comp300\3015CW1\x64\Debug\glslprogram.obj
 F:\Comp300\3015CW1\helper\glutils.cpp;F:\Comp300\3015CW1\x64\Debug\glutils.obj
+F:\Comp300\3015CW1\helper\noisetex.cpp;F:\Comp300\3015CW1\x64\Debug\noisetex.obj
 F:\Comp300\3015CW1\helper\objmesh.cpp;F:\Comp300\3015CW1\x64\Debug\objmesh.obj
 F:\Comp300\3015CW1\helper\stb_image.cpp;F:\Comp300\3015CW1\x64\Debug\stb_image.obj
 F:\Comp300\3015CW1\helper\teapot.cpp;F:\Comp300\3015CW1\x64\Debug\teapot.obj
