@@ -174,13 +174,13 @@ J: Bloom Off<br>
 C: Exposure Up<br>
 V: Exposure Down<br>
 -<br>
-B: Equip Night Vision Goggles
-N: Unequip Night Vision Goggles
+B: Equip Night Vision Goggles<br>
+N: Unequip Night Vision Goggles<br>
 -<br>
-Z: Disintegrate
-X: Fill in with putty
+Z: Disintegrate<br>
+X: Fill in with putty<br>
 -<br>
-Left Click: Turn on Flashlight
-Right Click: Turn off Flashlight
+Left Click: Turn on Flashlight<br>
+Right Click: Turn off Flashlight<br>
 
 
