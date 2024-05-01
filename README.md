@@ -90,7 +90,72 @@ Using a small change of code, we can extract our blur alone and see what it look
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/a227a761-3951-42bf-9ac7-940c6473dfdd)<br>
 
 
+<h1>Noise Effects</h1>
+Our perlin noise texture is generated at our initScene() function, using the perlin noise generator class from the labs:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/6d994303-cfeb-42b3-92b2-4d65efffab7c)<br>
+Our texture is saved to GL_TEXTURE2, as 0 holds our screenspace texture for 2 pass rendering, and slot 1 holds our bloom blur which is applied. A boolean "noise" is used to control whether or not the nightvision goggles are activated (discussed later).
+In finalBlendShader and basic_uniform frag files, we access our noiseTexture as a uniform sampler2D, and use this texture to generate the following effects:<br>
 
+<h2>Disintegration/Decay</h2><br>
+In basicuniform.frag, we can use our noise texture, with an upper and lower boundary to select areas of our noise by sampling our alpha (noise.a) to pick out the black and white sections of the perlin noise:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/8cd59b1e-283f-478a-813a-a71b620f6cef)<br>
+With this code, we can check if our noise is in the lower boundary ( a less than low ) or the upper boundary ( a greater than high), then check our disintegration boolean (disint) to decide if it should be disintegrated, if the boolean is true, we use the discard line to completely cancel the rendering process on this fragment, telling the shader to not render this fragment, giving us a disintegrated look:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/b68ac12e-76b5-4fdd-adcd-ed1a0f864ed1)<br>
+this effect is applied onto our plane, a test torus for demonstration, and the cart you ride in, giving it a deteriorated and rustic look, complimented by the mixed mossy shaders.
+
+<h2>Paint Splatter</h2><br>
+The same as Disintegration, paint splatter uses the same higher or lower threshold given by our noise alpha to affect our render, however instead of termintating the render process, we instead will will in the gaps a completely different colour and shading:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/5f63f20c-b697-4df9-8ebc-1137be3a79b8)<br>
+in this program I have used a matte blue to simulate a putty, however making it look like "paint" would be as easy as running it through the phong calculations, but adjusting the ambient, diffuse, and specular to give off a shinier and glossier finish.
+
+<h2>Night Vision Goggles</h2>
+
+The largest noise feature, Night Vision Goggles are actually created in our finalBlendShader.frag file, the shader used for our 2 stage rendering process, so that we can manipulate the final image of our render. The goggles apply a higher gamma threshold, allowing for much greater visibility, while also overlaying a green hue, as well as a noisy texture to simulate the static grime that comes with night vision goggles (at the very least, the night vision goggles that appear in modern games):<br>
+![97DBC294-EE76-4290-8045-FA94FA4992FE_1_201_a-600x400](https://github.com/Spenu12994/3015CW1/assets/91668500/772f8bc8-0caa-4ecd-ba4d-b07927fef921)<br>
+
+noiseBool is our boolean that controls whether our night vision goggles are equipped or not, and if true will rerun our tone mapping and gamma correcting, however this time with a much higher exposure, and by taking our final result and putting it through a luminance vector, mapping a green hue onto our scene:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/29e1f121-15e3-4917-bee1-85be9f296198)<br>
+
+Here are the final results:<br>
+
+Off:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/1816b705-62ee-4272-a3db-675a7f79e972)<br>
+On:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/c77430cd-7577-440e-8ec4-d35bd093d281)<br>
+
+
+Turning the exposure down, we can see just how much difference the goggles make:<br>
+
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/f9e68c47-526f-4ee8-87af-8975483649ad)<br>
+
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/0517e5c3-e175-4aec-a845-ce8c6f48b12b)<br>
+
+allowing us to see features that could possibly be seen otherwise.
+
+<h1>Lighting Techniques</h1>
+
+Finally, from coursework 1, the spotlight feature has been fixed, updated, and adapted into a flashlight which follows the view and can be toggled on and off.<br>
+
+This version now fully utilises our normalMatrix (in our vertex shader) to pass through our world location and normalize our normals, allowing our flashlight to full track and rotate onto our view.<br>
+
+Another addition includes our distance and attenuation calculations (in our fragment shader), allowing for a more realistic spread of light, accurate to our flashlight:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/16313e13-d046-4aae-a8ee-2b3c3076e3dc)<br>
+
+The final results look as follows:<br>
+off:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/4a39ee15-85e4-41b6-a772-48894d6f2fc1)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/be8778a8-2162-4dcb-bd0b-6f38dc369164)<br>
+
+on:<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/b28ecf46-bfb3-4b3d-ba7c-a6a65e76a2b8)<br>
+![image](https://github.com/Spenu12994/3015CW1/assets/91668500/0a612efb-233f-4813-a8f0-3938afff9bd5)<br>
+
+
+
+
+
+
+<h2></h2>
 
 Additional:<br>
 ![image](https://github.com/Spenu12994/3015CW1/assets/91668500/4894a4ad-90fd-4b92-bf1a-cec5c5620d93)<br>
@@ -109,6 +174,13 @@ J: Bloom Off<br>
 C: Exposure Up<br>
 V: Exposure Down<br>
 -<br>
-B: 
-N: 
+B: Equip Night Vision Goggles
+N: Unequip Night Vision Goggles
+-<br>
+Z: Disintegrate
+X: Fill in with putty
+-<br>
+Left Click: Turn on Flashlight
+Right Click: Turn off Flashlight
+
 
