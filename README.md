@@ -165,6 +165,9 @@ Additional:<br>
 
 
 <h1>Keyboard Controls</h1>
+WASD - Movement<br>
+Mouse - Look Around<br>
+
 F (5): HDR On<br>
 G: HDR Off<br>
 -<br>
