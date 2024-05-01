@@ -152,8 +152,15 @@ on:<br>
 
 
 
+<h1>Gameification</h1>
 
+For this handin, I have put together more components to work towards a game. Our large corridor fits our original project vision of a cart ride game. The addition of mouse click controls makes our game up to the industry standard, and we have added player items that can aid in exploration: <br>
 
+A Flashlight: left clicking activates our flashlight, that allows us to look around our tunnel, and light up our demonstration torus <br>
+
+Night Vision Goggles: pressing B enables our Night vision goggles, which greatly increases visability across the entire game, upping gamma, at the cost of poor visability and loss of colours (thanks to the technology behind the mask) <br>
+
+Caulk Gun – in order to fill in the gaps and holes in our environments, and repair the damage done to our cart, pressing X will repair our environment and our cart, filling them with a blue putty that holds them together, and would slowly wear down over time with damage. <br>
 
 <h2></h2>
 
